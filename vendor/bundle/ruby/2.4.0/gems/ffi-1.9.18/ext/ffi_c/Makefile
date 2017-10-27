@@ -12,12 +12,12 @@ NULLCMD = :
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /usr/local/rvm/rubies/ruby-2.4.1/include/ruby-2.4.0
+topdir = /usr/local/include/ruby-2.4.0
 hdrdir = $(topdir)
-arch_hdrdir = /usr/local/rvm/rubies/ruby-2.4.1/include/ruby-2.4.0/x86_64-linux
+arch_hdrdir = /usr/local/include/ruby-2.4.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = $(DESTDIR)/usr/local/rvm/rubies/ruby-2.4.1
+prefix = $(DESTDIR)/usr/local
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -31,8 +31,8 @@ rubyhdrdir = $(includedir)/$(RUBY_VERSION_NAME)
 vendorarchdir = $(vendorlibdir)/$(sitearch)
 vendorlibdir = $(vendordir)/$(ruby_version)
 vendordir = $(rubylibprefix)/vendor_ruby
-sitearchdir = $(DESTDIR)./.gem.20171023-13220-195pi86
-sitelibdir = $(DESTDIR)./.gem.20171023-13220-195pi86
+sitearchdir = $(DESTDIR)./.gem.20171027-23282-71b7h0
+sitelibdir = $(DESTDIR)./.gem.20171027-23282-71b7h0
 sitedir = $(rubylibprefix)/site_ruby
 rubyarchdir = $(rubylibdir)/$(arch)
 rubylibdir = $(rubylibprefix)/$(ruby_version)
@@ -65,10 +65,10 @@ archdir = $(rubyarchdir)
 
 CC = gcc
 CXX = g++
-LIBRUBY = $(LIBRUBY_SO)
+LIBRUBY = $(LIBRUBY_A)
 LIBRUBY_A = lib$(RUBY_SO_NAME)-static.a
-LIBRUBYARG_SHARED = -Wl,-R$(libdir) -L$(libdir) -l$(RUBY_SO_NAME)
-LIBRUBYARG_STATIC = -Wl,-R$(libdir) -L$(libdir) -l$(RUBY_SO_NAME)-static
+LIBRUBYARG_SHARED = -Wl,-rpath,$(libdir) -L$(libdir) 
+LIBRUBYARG_STATIC = -Wl,-rpath,$(libdir) -L$(libdir) -l$(RUBY_SO_NAME)-static
 empty =
 OUTFLAG = -o $(empty)
 COUTFLAG = -o $(empty)
@@ -81,7 +81,7 @@ optflags = -O3 -fno-fast-math
 debugflags = -ggdb3
 warnflags = 
 CCDLFLAGS = -fPIC
-CFLAGS   = $(CCDLFLAGS) $(cflags)  -fPIC  $(ARCH_FLAG)
+CFLAGS   = $(CCDLFLAGS) $(cflags)  $(ARCH_FLAG)
 INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir) 
 DEFS     = 
 CPPFLAGS = -DRUBY_EXTCONF_H=\"$(RUBY_EXTCONF_H)\"  $(DEFS) $(cppflags)
@@ -123,7 +123,7 @@ TOUCH = exit >
 
 preload = 
 libpath = . $(libdir)
-LIBPATH =  -L. -L$(libdir) -Wl,-R$(libdir)
+LIBPATH =  -L. -L$(libdir) -Wl,-rpath,$(libdir)
 DEFFILE = 
 
 CLEANFILES = mkmf.log
@@ -134,11 +134,11 @@ extout =
 extout_prefix = 
 target_prefix = 
 LOCAL_LIBS = 
-LIBS = $(LIBRUBYARG_SHARED) -lffi  -lffi -lpthread -lgmp -ldl -lcrypt -lm   -lc
+LIBS =  -lffi  -lffi -lpthread -ldl -lcrypt -lm   -lc
 ORIG_SRCS = AbstractMemory.c ArrayType.c Buffer.c Call.c ClosurePool.c DataConverter.c DynamicLibrary.c Function.c FunctionInfo.c LastError.c LongDouble.c MappedType.c MemoryPointer.c MethodHandle.c Platform.c Pointer.c Struct.c StructByReference.c StructByValue.c StructLayout.c Thread.c Type.c Types.c Variadic.c ffi.c
 SRCS = $(ORIG_SRCS) 
 OBJS = AbstractMemory.o ArrayType.o Buffer.o Call.o ClosurePool.o DataConverter.o DynamicLibrary.o Function.o FunctionInfo.o LastError.o LongDouble.o MappedType.o MemoryPointer.o MethodHandle.o Platform.o Pointer.o Struct.o StructByReference.o StructByValue.o StructLayout.o Thread.o Type.o Types.o Variadic.o ffi.o
-HDRS = $(srcdir)/AbstractMemory.h $(srcdir)/extconf.h $(srcdir)/Thread.h $(srcdir)/MemoryPointer.h $(srcdir)/DynamicLibrary.h $(srcdir)/MethodHandle.h $(srcdir)/Call.h $(srcdir)/ClosurePool.h $(srcdir)/rbffi_endian.h $(srcdir)/StructByValue.h $(srcdir)/Type.h $(srcdir)/ArrayType.h $(srcdir)/StructByReference.h $(srcdir)/Types.h $(srcdir)/rbffi.h $(srcdir)/LastError.h $(srcdir)/compat.h $(srcdir)/Function.h $(srcdir)/Pointer.h $(srcdir)/MappedType.h $(srcdir)/Struct.h $(srcdir)/Platform.h $(srcdir)/LongDouble.h
+HDRS = $(srcdir)/Types.h $(srcdir)/Platform.h $(srcdir)/extconf.h $(srcdir)/MethodHandle.h $(srcdir)/Struct.h $(srcdir)/ClosurePool.h $(srcdir)/compat.h $(srcdir)/rbffi.h $(srcdir)/StructByValue.h $(srcdir)/StructByReference.h $(srcdir)/DynamicLibrary.h $(srcdir)/MappedType.h $(srcdir)/Function.h $(srcdir)/MemoryPointer.h $(srcdir)/AbstractMemory.h $(srcdir)/ArrayType.h $(srcdir)/LastError.h $(srcdir)/Call.h $(srcdir)/Pointer.h $(srcdir)/rbffi_endian.h $(srcdir)/Thread.h $(srcdir)/LongDouble.h $(srcdir)/Type.h
 LOCAL_HDRS = 
 TARGET = ffi_c
 TARGET_NAME = ffi_c
@@ -160,7 +160,7 @@ CLEANLIBS     = $(TARGET_SO)
 CLEANOBJS     = *.o  *.bak
 
 all:    $(DLLIB)
-static: $(STATIC_LIB) install-rb
+static: $(STATIC_LIB)
 .PHONY: all install static install-so install-rb
 .PHONY: clean clean-so clean-static clean-rb
 
