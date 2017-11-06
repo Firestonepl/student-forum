@@ -6,8 +6,10 @@ Rails.application.routes.draw do
   resources :courses
   resources :students
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-root to: 'static#index'
-get    '/login',   to: 'sessions#new'
-post   '/login',   to: 'sessions#create'
-delete '/logout',  to: 'sessions#destroy'
-end
+	root to: 'static#index'
+	get    '/login',   to: 'sessions#new'
+	post   '/login',   to: 'sessions#create'
+	delete '/logout',  to: 'sessions#destroy'
+	get '/courses/:id/follow', to: 'courses#follow'
+	get '/courses/:id/unfollow', to: 'courses#unfollow'
+	end
